@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VRR FPS Calculator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .calculator {
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      width: 320px;
+      text-align: center;
+    }
+    .calculator h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .calculator select, 
+    .calculator input[type="number"] {
+      width: calc(100% - 20px);
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    .calculator button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #6200ea;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .calculator button:hover {
+      background-color: #3700b3;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <h1>VRR FPS Calculator</h1>
+    <select id="gpuType">
+      <option value="amd">AMD (1ms delay)</option>
+      <option value="nvidia">NVIDIA (0.3ms delay)</option>
+    </select>
+    <input type="number" id="inputFps" placeholder="Enter FPS" min="1">
+    <button id="calculateBtn">Calculate</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    // Function to calculate FPS using the formula:
+    // New FPS = 1000 / ((1000 / input FPS) + additional delay)
+    // additional delay: 1ms for AMD, 0.3ms for NVIDIA
+    function calculateFPS(fps, additionalDelay) {
+      return 1000 / ((1000 / fps) + additionalDelay);
+    }
+
+    document.getElementById('calculateBtn').addEventListener('click', function() {
+      const inputFps = parseFloat(document.getElementById('inputFps').value);
+      const gpuType = document.getElementById('gpuType').value;
+      const resultDiv = document.getElementById('result');
+
+      if (isNaN(inputFps) || inputFps <= 0) {
+        resultDiv.textContent = "Please enter a valid FPS value.";
+        return;
+      }
+
+      // Choose additional delay based on GPU type
+      let additionalDelay = (gpuType === 'amd') ? 1 : 0.3;
+      const newFps = calculateFPS(inputFps, additionalDelay);
+      
+      // Display result without rounding (displayed with 2 decimals)
+      resultDiv.textContent = "New FPS: " + newFps.toFixed(2);
+    });
+  </script>
+</body>
+</html>
